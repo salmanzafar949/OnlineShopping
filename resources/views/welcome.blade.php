@@ -69,6 +69,16 @@
                 <div class="top-right links">
                     @auth
                         <a href="{{ url('/home') }}">Home</a>
+                    @if (Session::has('cart'))
+                        @if (count(Session::get('cart')) > 0)
+                                <form method="post" action="{{ route('order.store') }}">
+                                    @csrf
+                                    <button type="submit">CheckOut {{ count(Session::get('cart')) }}</button>
+                                </form>
+                            @else
+                                <a href="#">your cart is empty</a>
+                        @endif
+                    @endif
                     @else
                         <a href="{{ route('login') }}">Login</a>
 
@@ -81,19 +91,31 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Products
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+                <ul class="list-group">
+                     @forelse($products as $product)
+                         <li class="list-group-item">
+                             {{ $product->name }} - {{ $product->price }} <a href="{{ route('addtocart', $product->id) }}" class="links float-right">Add to cart</a>
+                         </li>
+                     @empty
+                       <div class="alert-danger">
+                           No product Available
+                       </div>
+                    @endforelse
+                </ul>
+
             </div>
+        </div>
+        <div class="card-body">
+            @if (session('success_message'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success_message') }}
+                </div>
+            @endif
+
+            You are logged in!
         </div>
     </body>
 </html>

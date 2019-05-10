@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -37,10 +38,14 @@ class ProductController extends Controller
     {
         $this->validate($request, [
             'name' => 'required|string',
-            'price' => 'required|float'
+            'price' => 'required'
         ]);
 
         Product::create($request->all());
+
+        return response([
+            'data' => "success"
+        ],Response::HTTP_CREATED);
 
         return
             redirect()
@@ -79,7 +84,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        //
+        $product->update($request->all());
+
+        return
+            redirect()
+                ->back()
+                ->with('success_message','Product Updated.');
     }
 
     /**
@@ -90,6 +100,11 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return
+            redirect()
+                ->back()
+                ->with('success_message','Product deleted.');
     }
 }

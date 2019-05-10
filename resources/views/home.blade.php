@@ -16,6 +16,26 @@
 
                     You are logged in!
                 </div>
+                @if($my_orders->count() > 0)
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Ordered_on</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($my_orders as $order)
+                            <tr>
+                                <td>{{ $order->Product->name }}</td>
+                                <td>{{ $order->Product->name }}</td>
+                                <td>{{ $order->created_at->diffForHumans() }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @endif
             </div>
         </div>
     </div>

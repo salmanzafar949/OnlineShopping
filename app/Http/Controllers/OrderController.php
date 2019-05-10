@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Order;
+use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -27,6 +29,48 @@ class OrderController extends Controller
         //
     }
 
+    public function addToCart(Product $product)
+    {
+
+
+        $cart = session()->get('cart');
+
+        // if cart is empty then this the first product
+        if(!$cart) {
+
+            $cart = [
+                $product->id => [
+                    'product_id' => $product->id,
+                    "name" => $product->name,
+                    "quantity" => 1,
+                    "price" => $product->price,
+                ]
+            ];
+
+            session()->put('cart', $cart);
+
+            return
+                redirect()
+                    ->back()
+                    ->with('success_message', 'Product added to cart successfully!');
+        }
+
+        $cart[$product->id] = [
+            'product_id' => $product->id,
+            "name" => $product->name,
+            "quantity" => 1,
+            "price" => $product->price,
+        ];
+
+        session()->put('cart', $cart);
+
+        return
+            redirect()
+                ->back()
+                ->with('success_message', 'Product added to cart successfully!');
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -35,7 +79,32 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $orders = session()->get('cart');
+
+        if (count($orders) <= 0)
+        {
+            return
+                redirect()
+                    ->back()
+                    ->with('success_message','Cart is empty');
+        }
+        else
+        {
+            foreach ($orders as $order)
+            {
+
+                Auth::user()->Orders()->create([
+                    'product_id' => $order['product_id'],
+                    'name' => $order['name'],
+                    'price' => $order['price']
+                ]);
+            }
+
+            session()->forget('cart');
+
+        }
+
+        return redirect()->back()->with('success_message','Order Received Successfully');
     }
 
     /**
@@ -80,6 +149,6 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+
     }
 }

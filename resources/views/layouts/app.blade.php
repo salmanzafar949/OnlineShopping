@@ -67,6 +67,20 @@
                                 </div>
                             </li>
                         @endguest
+
+                        @if (Session::has('cart'))
+                            @if (count(Session::get('cart')) > 0)
+                                <form method="post" action="{{ route('order.store') }}">
+                                    @csrf
+                                    <button type="submit">CheckOut {{ count(Session::get('cart')) }}</button>
+                                </form>
+                            @else
+                                <li class="nav-item">
+                                <a href="#">your cart is empty</a>
+                                </li>
+                            @endif
+                        @endif
+
                     </ul>
                 </div>
             </div>
