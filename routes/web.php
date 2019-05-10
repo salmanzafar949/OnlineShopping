@@ -22,7 +22,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['auth'], function () {
+Route::middleware(['auth'])->group(function () {
 
     Route::resource('/order','OrderController');
     Route::resource('/product','ProductController');

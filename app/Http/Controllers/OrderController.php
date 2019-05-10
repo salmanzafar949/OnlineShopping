@@ -86,7 +86,7 @@ class OrderController extends Controller
             return
                 redirect()
                     ->back()
-                    ->with('success_message','Cart is empty');
+                    ->with('error_message','Cart is empty');
         }
         else
         {
